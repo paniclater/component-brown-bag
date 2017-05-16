@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { SearchInput } from 'mx-react-components';
-import debounce from 'lodash/debounce';
 import logo from './logo.svg';
 import './App.css';
 
@@ -49,12 +47,7 @@ class App extends Component {
       }))
   }
 
-  handleSearchChange = (event) => {
-    this.getUrls(event.target.value);
-  }
-
   componentDidMount () {
-    this.getUrls = debounce(this.getUrls, 500);
     this.getUrls(this.state.terms);
   }
 
@@ -64,9 +57,6 @@ class App extends Component {
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h2>Welcome to React</h2>
-        </div>
-        <div style={{ padding: 10, background: 'tomato'}}>
-          <SearchInput onChange={this.handleSearchChange} />
         </div>
         <div style={{ display: 'flex', width: 800, flexWrap: 'wrap', margin: 'auto'}}>
           {this.state.urls.slice(0, 6).map(url => <Giphy key={url} url={url} />)}
