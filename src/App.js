@@ -22,7 +22,6 @@ const Giphy = ({ url = 'https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gi
 
 class App extends Component {
   state = {
-    isLoading: true,
     urls: []
   }
 
@@ -40,16 +39,12 @@ class App extends Component {
       cache: 'default'
     };
 
-    this.setState({ isLoading: true });
-
     fetch(createSearchUrl({terms, key}), options)
       .then(response => response.json())
       .then(response => this.setState({
-        isLoading: false,
         urls: response.data.map(createSrcUrl)
       }))
       .catch(() => this.setState({
-        isLoading: false,
         urls: ['https://giphy.com/gifs/smoke-worried-stressed-14qIliCMe87BwA']
       }))
   }
@@ -62,11 +57,8 @@ class App extends Component {
           <h2>Welcome to React</h2>
         </div>
         <div style={{ display: 'flex', width: 800, flexWrap: 'wrap', margin: 'auto'}}>
-          {!this.state.isLoading && this.state.urls.slice(0, 6).map(url => <Giphy url={url} />)}
+          {this.state.urls.slice(0, 6).map(url => <Giphy url={url} />)}
         </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
       </div>
     );
   }
