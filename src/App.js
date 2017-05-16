@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
+import { SearchInput } from 'mx-react-components';
+import debounce from 'lodash/debounce';
 import logo from './logo.svg';
 import './App.css';
+
 
 const createSearchUrl = ({terms, key}) => {
   return `http://api.giphy.com/v1/gifs/search?q=${terms}&api_key=${key}`;
@@ -14,7 +17,7 @@ const Giphy = ({ url = 'https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gi
   <div style={{ margin: 20, maxWidth: 200, border: 'solid 10px tomato'}}>
     <img
       alt='a gif from giphy'
-      style= {{ height: '100%', width: '100%' }}
+      style={{ height: '100%', width: '100%' }}
       src={url}
     />
   </div>
@@ -22,15 +25,12 @@ const Giphy = ({ url = 'https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gi
 
 class App extends Component {
   state = {
+    terms: 'cute+corgi',
     urls: []
   }
 
-  styles = {
-
-  }
-
-  componentDidMount () {
-    const terms = 'cute+corgi';
+  getUrls = (terms) => {
+    console.log(terms);
     const key = 'dc6zaTOxFJmzC';
     const options = {
       method: 'GET',
@@ -49,6 +49,15 @@ class App extends Component {
       }))
   }
 
+  handleSearchChange = (event) => {
+    this.getUrls(event.target.value);
+  }
+
+  componentDidMount () {
+    this.getUrls = debounce(this.getUrls, 500);
+    this.getUrls(this.state.terms);
+  }
+
   render() {
     return (
       <div className="App">
@@ -56,8 +65,11 @@ class App extends Component {
           <img src={this.state.urls[0]} className="App-logo" alt="logo" />
           <h2>Welcome to React</h2>
         </div>
+        <div style={{ padding: 10, background: 'tomato'}}>
+          <SearchInput onChange={this.handleSearchChange} />
+        </div>
         <div style={{ display: 'flex', width: 800, flexWrap: 'wrap', margin: 'auto'}}>
-          {this.state.urls.slice(0, 6).map(url => <Giphy url={url} />)}
+          {this.state.urls.slice(0, 6).map(url => <Giphy key={url} url={url} />)}
         </div>
       </div>
     );
